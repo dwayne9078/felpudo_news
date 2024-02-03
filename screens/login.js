@@ -34,9 +34,7 @@ export default function Login( {navigation} ) {
             </View>
             <View style={styles.body}>
               <UsernameInput setUsername={setUsername}/>
-              <Text style={styles.validatorText}>VALIDADOR DE CAMPO</Text>
               <PasswordInput setPass={setPass} />
-              <Text style={styles.validatorText}>VALIDADOR DE CAMPO</Text>
               <TouchableHighlight
                 style={styles.btnLoginContainer}
                 underlayColor={"#fff"}

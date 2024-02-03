@@ -1,8 +1,11 @@
+import 'react-native-gesture-handler';
 import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createStackNavigator();
 import Login from "../screens/login";
-import HomeScreen from "../screens/home";
+
+import { MyBottomTabs } from './bottomtabs.navigator';
+
+const Stack = createStackNavigator();
 
 export function StackNav() {
   return (
@@ -10,12 +13,12 @@ export function StackNav() {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{ headerMode: false }}
+        options={{ headerMode: true, gestureEnabled: false }}
       />
       <Stack.Screen
         name="home"
-        component={HomeScreen}
-        options={{ headerMode: false }}
+        component={MyBottomTabs}
+        options={{ headerMode: true, gestureEnabled: false }}
       />
     </Stack.Navigator>
   );
