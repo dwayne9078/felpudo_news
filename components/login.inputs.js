@@ -1,31 +1,36 @@
 import { TextInput } from "react-native";
 
-import styles from "../styles/login.style";
+import loginStyles from "../styles/login.style";
 
-export function UsernameInput({ setUsername }) {
+export function UsernameInput({ user, setUsername }) {
   return (
     <TextInput
-      style={styles.input}
+      blurOnSubmit={false}
+      style={loginStyles.input}
       placeholder={"Nombre de Usuario"}
       placeholderTextColor={"#fff"}
       autoCapitalize={"none"}
       keyboardType={"default"}
       keyboardAppearance="dark"
       onChangeText={(newText) => setUsername(newText)}
+      value={user}
+      returnKeyType="next"
     />
   );
 }
 
-export function PasswordInput({ setPass }) {
+export function PasswordInput({ pass, setPass }) {
   return (
     <TextInput
-      style={styles.input}
+      style={loginStyles.input}
       placeholder={"Contraseña"}
       placeholderTextColor={"#fff"}
       autoCapitalize={"none"}
       secureTextEntry={true}
-      keyboardAppearance="default"
+      keyboardAppearance="dark"
       onChangeText={(newText) => setPass(newText)}
+      value={pass}
+      returnKeyType="done"
     />
   );
 }

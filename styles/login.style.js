@@ -1,71 +1,70 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+const loginStyles = StyleSheet.create({
   header: {
-    backgroundColor: '#044974',
+    backgroundColor: "#044974",
     flex: 1.2,
-    alignItems: 'center',
+    alignItems: "center",
   },
   body: {
-    backgroundColor: '#00164b',
+    backgroundColor: "#00164b",
     flex: 2,
-    alignItems: 'center',
-    justifyContent: 'flex-start'
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   input: {
     borderRadius: 10,
-    color: '#fff',
+    color: "#fff",
     width: 320,
     height: 62,
-    backgroundColor: '#ffffff15',
-    borderColor: '#938f99',
+    backgroundColor: "#ffffff15",
+    borderColor: "#938f99",
     marginTop: 40,
     paddingLeft: 20,
-    fontSize: 20
+    fontSize: 20,
   },
   logo: {
     width: 187,
     height: 187,
     borderRadius: 100,
-    alignSelf: 'center',
-    marginTop: 20
+    alignSelf: "center",
+    marginTop: 20,
   },
   title: {
-    color: 'white',
+    color: "white",
     fontSize: 30,
-    fontFamily: 'Arial',
-    fontWeight: '700',
-    // wordWrap: 'break-word',
-    textAlign: 'center',
-    marginTop: 10
+    fontFamily: "Arial",
+    fontWeight: "700",
+    textAlign: "center",
+    marginTop: 10,
   },
   btnLogin: {
     width: 320,
-    backgroundColor: '#b80000',
+    backgroundColor: "#b80000",
     height: 53,
     borderRadius: 100,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   btnLoginContainer: {
     marginTop: 40,
     height: 53,
-    borderRadius: 100
+    borderRadius: 100,
   },
   btnLoginText: {
-    textAlign: 'center',
-    color: '#fff',
+    textAlign: "center",
+    color: "#fff",
     fontSize: 22,
-    fontFamily: 'Arial',
-    fontWeight: 500,
+    fontFamily: "Arial",
+    fontWeight: '500',
   },
   btnRegister: {
-    color: '#938F99',
+    color: "#938F99",
     fontSize: 20,
-    margin: 20
+    margin: 20,
   },
-  validatorText: {
-    color: "#fff"
-  }
+  authMsgText: {
+    color: "#fff",
+  },
 });
 
-export default styles;
+export default loginStyles;
