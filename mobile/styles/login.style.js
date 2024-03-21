@@ -33,7 +33,7 @@ const loginStyles = StyleSheet.create({
   title: {
     color: "white",
     fontSize: 30,
-    fontFamily: "Arial",
+    // fontFamily: "Arial",
     fontWeight: "700",
     textAlign: "center",
     marginTop: 10,
@@ -54,8 +54,8 @@ const loginStyles = StyleSheet.create({
     textAlign: "center",
     color: "#fff",
     fontSize: 22,
-    fontFamily: "Arial",
-    fontWeight: '500',
+    // fontFamily: "Arial",
+    fontWeight: "500",
   },
   btnRegister: {
     color: "#938F99",

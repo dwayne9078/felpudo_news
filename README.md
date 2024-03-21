@@ -1,4 +1,3 @@
-
 # Felpudo News
 
 Proyecto para la materia de aplicaciones móviles multiplataforma hecho en React Native con Expo.
@@ -32,4 +31,3 @@ Start the server
 ```bash
   npm run start
 ```
-

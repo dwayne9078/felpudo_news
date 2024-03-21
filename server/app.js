@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const DB_PORT = 27017;
 const DB_NAME = "felpudo_news";
@@ -35,6 +36,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser("secret123"));
 
 app.get("/users", async (req, res) => {
   const users = await userModel.find();
@@ -42,6 +44,12 @@ app.get("/users", async (req, res) => {
   if (users) {
     res.send({ usuarios: users });
   }
+});
+
+app.get("/user", async (req, res) => {
+  let cookie = req.cookies;
+  console.log(cookie);
+  res.send(cookie);
 });
 
 app.post("/register", async (req, res) => {
@@ -73,10 +81,16 @@ app.post("/login", async (req, res) => {
   console.log(foundUser);
 
   if (foundUser !== null) {
+    res.cookie("user", username, { httpOnly: true, maxAge: 60000 });
     res.send({ mensaje: "Bienvenido a Felpudo News", status: 200 });
   } else {
     res.send({ mensaje: "Credenciales Incorrectas", status: 404 });
   }
+});
+
+app.post("/logout", async (req, res) => {
+  res.clearCookie("user", { maxAge: 0 });
+  res.send({ mensaje: "SESION CERRADA" });
 });
 
 export default app;
