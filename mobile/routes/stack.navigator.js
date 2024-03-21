@@ -19,7 +19,7 @@ export function StackNav() {
       <Stack.Screen
         name="register"
         component={Register}
-        options={{ headerMode: true, gestureEnabled: true }}
+        options={{ headerMode: true, gestureEnabled: false }}
       />
       <Stack.Screen
         name="home"
