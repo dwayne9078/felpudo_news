@@ -64,6 +64,7 @@ app.post("/register", async (req, res) => {
   user.save().then(
     (user) => {
       console.log(user);
+      res.cookie("user", username, { httpOnly: true, maxAge: 60000 });
       res.send("USUARIO REGISTRADO CON EXITO");
     },
     (err) => {

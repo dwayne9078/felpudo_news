@@ -8,8 +8,8 @@ import { API_LOGOUT, API_USER } from "../util/constants.util";
 
 export default function ProfileScreen({ navigation }) {
   const [username, setUsername] = useState(null);
-  axios.get(`${API_USER}`).then((res) => {
-    console.log(res.data);
+  axios.get(API_USER).then((res) => {
+    console.log(`Respuesta de la peticion: ${res.data}`);
     setUsername(res.data.user);
   });
 
