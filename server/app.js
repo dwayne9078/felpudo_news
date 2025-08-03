@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 
 const DB_PORT = 27017;
 const DB_NAME = "felpudo_news";
-const DB_URI = `mongodb://127.0.0.1:${DB_PORT}/${DB_NAME}`;
+const DB_URI = `mongodb://mongo-db:${DB_PORT}/${DB_NAME}`;
 
 mongoose.connect(DB_URI).then(
   (a) => console.log("CONECTADO A MONGO CORRECTAMENTE"),

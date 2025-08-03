@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  fn-express-api:
+    build:
+      context: "./server"
+      dockerfile: Dockerfile
+    container_name: fn-express-api
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo-db
+
+  mongo-db:
+    image: mongo:latest
+    container_name: mondo-db
+    ports:
+      - 27017:27017
