@@ -7,12 +7,16 @@ services:
       dockerfile: Dockerfile
     container_name: fn-express-api
     ports:
-      - 3000:3000
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     depends_on:
       - mongo-db
+    restart: always
 
   mongo-db:
     image: mongo:latest
-    container_name: mondo-db
+    container_name: mongo-db
     ports:
-      - 27017:27017
+      - "27017:27017"
