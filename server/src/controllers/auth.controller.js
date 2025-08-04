@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 
 export const register = async (req, res) => {
@@ -30,6 +31,15 @@ export const login = async (req, res) => {
   console.log(foundUser);
 
   if (foundUser !== null) {
+    const isPasswordMatched = await bcrypt.compare(
+      password,
+      foundUser.password
+    );
+
+    if (isPasswordMatched) {
+      // TODO implement JWT Logic here
+    }
+
     res.cookie("user", username, { httpOnly: true, maxAge: 60000 });
     res.send({ mensaje: "Bienvenido a Felpudo News", status: 200 });
   } else {
