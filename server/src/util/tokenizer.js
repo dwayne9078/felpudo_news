@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 
-const jwtSecret = process.env.JWT_SECRET;
+import { JWT_SECRET } from "../config/config.js";
 
 class Tokenizer {
   static createToken(payload, userId) {
-    const token = jwt.sign(payload, jwtSecret, {
+    const token = jwt.sign(payload, JWT_SECRET, {
       issuer: "localhost",
       subject: `${userId}`,
       audience: "/api",

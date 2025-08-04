@@ -1,5 +1,8 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
 import User from "../models/user.model.js";
+import Tokenizer from "../util/tokenizer.js";
 
 export const register = async (req, res) => {
   const [username, age, pass] = [
@@ -25,25 +28,42 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password);
 
-  const foundUser = await User.findOne({ username: username });
-  console.log(foundUser);
+  try {
+    console.log(username, password);
 
-  if (foundUser !== null) {
-    const isPasswordMatched = await bcrypt.compare(
-      password,
-      foundUser.password
-    );
+    const foundUser = await User.findOne({ username: username });
+    console.log(foundUser);
 
-    if (isPasswordMatched) {
-      // TODO implement JWT Logic here
+    if (!foundUser) {
+      return res.status(401).json({ message: "Incorrect Credentials" });
     }
 
-    res.cookie("user", username, { httpOnly: true, maxAge: 60000 });
-    res.send({ mensaje: "Bienvenido a Felpudo News", status: 200 });
-  } else {
-    res.send({ mensaje: "Credenciales Incorrectas", status: 404 });
+    const isPasswordMatched = bcrypt.compare(password, foundUser.password);
+
+    if (!isPasswordMatched) {
+      return res.status(401).json({ message: "Incorrect Credentials" });
+    }
+
+    const token = Tokenizer.createToken(
+      {
+        user: {
+          username: foundUser.username,
+        },
+      },
+      foundUser._id
+    );
+
+    res.cookie("access_tkn", token, {
+      httpOnly: true,
+      maxAge: 5 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ message: "Login Succesful", auth: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
