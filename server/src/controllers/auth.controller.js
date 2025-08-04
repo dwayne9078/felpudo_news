@@ -26,7 +26,7 @@ export const login = async (req, res) => {
   const { username, password } = req.body;
   console.log(username, password);
 
-  const foundUser = await userModel.findOne({ username: username });
+  const foundUser = await User.findOne({ username: username });
   console.log(foundUser);
 
   if (foundUser !== null) {
