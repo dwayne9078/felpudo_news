@@ -74,4 +74,19 @@ export const modifyNews = async (req, res) => {
   }
 };
 
-export const deleteNews = () => {};
+export const deleteNews = async (req, res) => {
+  try {
+    const newsId = req.params.id;
+
+    const result = await News.deleteOne({ _id: newsId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "News Not Found" });
+    }
+
+    res.status(200).json({ message: "News Deleted Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
