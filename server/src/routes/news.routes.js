@@ -10,10 +10,10 @@ import {
 
 const newsRouter = Router();
 
-newsRouter.get("/news", getAllNews);
-newsRouter.get("/news", getNewsById);
-newsRouter.post("/news", createNews);
-newsRouter.put("/news", updateNews);
-newsRouter.delete("/news", deleteNews);
+newsRouter.get("/", getAllNews);
+newsRouter.get("/:id", getNewsById);
+newsRouter.post("/", createNews);
+newsRouter.put("/:id", updateNews);
+newsRouter.delete("/:id", deleteNews);
 
 export default newsRouter;
