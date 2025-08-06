@@ -46,6 +46,32 @@ export const createNews = async (req, res) => {
   }
 };
 
-export const modifyNews = () => {};
+export const modifyNews = async (req, res) => {
+  try {
+    const newsId = req.params.id;
+
+    const { title, content, categories, author } = req.body;
+
+    const modifiedNews = await News.findByIdAndUpdate(
+      newsId,
+      {
+        title,
+        content,
+        categories,
+        author,
+      },
+      { new: true }
+    );
+
+    if (!modifiedNews) {
+      return res.status(404).json({ message: "News Not Found" });
+    }
+
+    res.status(200).json(modifiedNews);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 export const deleteNews = () => {};
