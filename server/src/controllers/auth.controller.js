@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { validationResult } from "express-validator";
 
 import User from "../models/user.model.js";
 import Tokenizer from "../util/tokenizer.js";
@@ -25,7 +26,7 @@ export const register = async (req, res) => {
     const createdUser = new User({
       username: username,
       email: email,
-      password: hashPassword(pass),
+      password: await hashPassword(password),
     });
 
     const isUserSaved = await createdUser.save();
