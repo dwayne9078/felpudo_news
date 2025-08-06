@@ -21,6 +21,31 @@ export const getNewsById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-export const createNews = () => {};
+
+export const createNews = async (req, res) => {
+  try {
+    const { title, content, categories, author } = req.body;
+
+    const newNews = new News({
+      title: title,
+      content: content,
+      categories: categories,
+      author: author,
+    });
+
+    const isNewsSaved = await newNews.save();
+
+    if (!isNewsSaved) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    res.status(200).json({ message: "News Created Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 export const modifyNews = () => {};
+
 export const deleteNews = () => {};
