@@ -1,29 +1,60 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 import User from "../models/user.model.js";
 import Tokenizer from "../util/tokenizer.js";
+import hashPassword from "../util/password_hasher.js";
 
 export const register = async (req, res) => {
-  const [username, age, pass] = [
-    req.body.username,
-    req.body.age,
-    req.body.pass,
-  ];
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(400).json({ message: "Missing or Incorrect Fields" });
+  }
 
-  const user = new User({ username: username, age: age, password: pass });
+  const { username, email, password } = req.body;
 
-  user.save().then(
-    (user) => {
-      console.log(user);
-      res.cookie("user", username, { httpOnly: true, maxAge: 60000 });
-      res.send("USUARIO REGISTRADO CON EXITO");
-    },
-    (err) => {
-      console.log(err);
-      res.send(`ERROR: ${err}`);
+  try {
+    // Verify if user is already registered
+    const existingUser = await User.findOne({ username: username });
+
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "An error occurred during the register" });
     }
-  );
+
+    const createdUser = new User({
+      username: username,
+      email: email,
+      password: hashPassword(pass),
+    });
+
+    const isUserSaved = await createdUser.save();
+
+    if (!isUserSaved) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    const token = Tokenizer.createToken(
+      {
+        user: {
+          username: createdUser.username,
+          isAdmin: createdUser.isAdmin,
+        },
+      },
+      createdUser._id
+    );
+
+    res.cookie("access_tkn", token, {
+      httpOnly: true,
+      maxAge: 5 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ message: "Registration Successful", auth: true });
+  } catch (error) {
+    console.error("An error has occurred: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export const login = async (req, res) => {
