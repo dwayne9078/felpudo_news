@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import { COOKIE_SECRET } from "./config/config.js";
 import authRouter from "./routes/auth.routes.js";
+import newsRouter from "./routes/news.routes.js";
 
 const app = express();
 
@@ -31,5 +32,6 @@ const authLimiter = rateLimit({
 });
 
 app.use("/api/v1/auth", authLimiter, authRouter);
+app.use("/api/v1/news", newsRouter);
 
 export default app;
