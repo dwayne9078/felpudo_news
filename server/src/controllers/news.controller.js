@@ -46,13 +46,13 @@ export const createNews = async (req, res) => {
   }
 };
 
-export const modifyNews = async (req, res) => {
+export const updateNews = async (req, res) => {
   try {
     const newsId = req.params.id;
 
     const { title, content, categories, author } = req.body;
 
-    const modifiedNews = await News.findByIdAndUpdate(
+    const updatedNews = await News.findByIdAndUpdate(
       newsId,
       {
         title,
@@ -63,11 +63,11 @@ export const modifyNews = async (req, res) => {
       { new: true }
     );
 
-    if (!modifiedNews) {
+    if (!updatedNews) {
       return res.status(404).json({ message: "News Not Found" });
     }
 
-    res.status(200).json(modifiedNews);
+    res.status(200).json(updatedNews);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
