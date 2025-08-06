@@ -6,7 +6,7 @@ import {
   createNews,
   updateNews,
   deleteNews,
-} from "../controllers/news.controller";
+} from "../controllers/news.controller.js";
 
 const newsRouter = Router();
 
