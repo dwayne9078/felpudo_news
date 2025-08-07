@@ -8,11 +8,17 @@ export const validateNewsIdParam = [
     .withMessage("Invalid News ID"),
 ];
 export const validateNewsBody = [
-  body("title").notEmpty().isString().withMessage("Title is required").escape(),
+  body("title")
+    .notEmpty()
+    .withMessage("Title is required")
+    .isString()
+    .withMessage("Title must be a string")
+    .escape(),
   body("content")
     .notEmpty()
-    .isString()
     .withMessage("Content is required")
+    .isString()
+    .withMessage("Content must be a string")
     .escape(),
   body("categories")
     .optional()
