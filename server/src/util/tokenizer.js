@@ -24,7 +24,7 @@ class Tokenizer {
         .json({ message: "User not Authenticated", status: 401 });
     }
 
-    jwt.verify(access_tkn, jwtSecret, (error, decoded) => {
+    jwt.verify(access_tkn, JWT_SECRET, (error, decoded) => {
       if (error) {
         console.error(error);
 
