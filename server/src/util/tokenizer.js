@@ -16,15 +16,15 @@ class Tokenizer {
   }
 
   static verifyToken(req, res, next) {
-    const { access_token } = req.cookies;
+    const { access_tkn } = req.cookies;
 
-    if (!access_token) {
+    if (!access_tkn) {
       return res
         .status(401)
         .json({ message: "User not Authenticated", status: 401 });
     }
 
-    jwt.verify(access_token, jwtSecret, (error, decoded) => {
+    jwt.verify(access_tkn, jwtSecret, (error, decoded) => {
       if (error) {
         console.error(error);
 
