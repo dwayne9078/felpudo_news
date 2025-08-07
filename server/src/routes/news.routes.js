@@ -11,13 +11,30 @@ import {
   validateNewsIdParam,
   validateNewsBody,
 } from "../middleware/news.middleware.js";
+import handleValidationErrors from "../middleware/validations_errors.middleware.js";
 
 const newsRouter = Router();
 
 newsRouter.get("/", getAllNews);
-newsRouter.get("/:id", validateNewsIdParam, getNewsById);
-newsRouter.post("/", validateNewsBody, createNews);
-newsRouter.put("/:id", validateNewsIdParam, validateNewsBody, updateNews);
-newsRouter.delete("/:id", validateNewsIdParam, deleteNews);
+newsRouter.get(
+  "/:id",
+  validateNewsIdParam,
+  handleValidationErrors,
+  getNewsById
+);
+newsRouter.post("/", validateNewsBody, handleValidationErrors, createNews);
+newsRouter.put(
+  "/:id",
+  validateNewsIdParam,
+  validateNewsBody,
+  handleValidationErrors,
+  updateNews
+);
+newsRouter.delete(
+  "/:id",
+  validateNewsIdParam,
+  handleValidationErrors,
+  deleteNews
+);
 
 export default newsRouter;
