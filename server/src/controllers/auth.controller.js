@@ -100,6 +100,6 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.clearCookie("user", { maxAge: 0 });
+  res.clearCookie("access_tkn", { maxAge: 0 });
   res.send({ mensaje: "SESION CERRADA" });
 };
