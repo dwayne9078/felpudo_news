@@ -8,7 +8,7 @@ class Tokenizer {
       issuer: "localhost",
       subject: `${userId}`,
       audience: "/api",
-      expiresIn: "3m",
+      expiresIn: "5m",
       notBefore: "2s",
     });
 
