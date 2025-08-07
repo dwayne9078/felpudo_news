@@ -7,7 +7,7 @@ class Tokenizer {
     const token = jwt.sign(payload, JWT_SECRET, {
       issuer: "localhost",
       subject: `${userId}`,
-      audience: "/api",
+      audience: "news-api",
       expiresIn: "5m",
       notBefore: "2s",
     });
