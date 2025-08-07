@@ -7,13 +7,17 @@ import {
   updateNews,
   deleteNews,
 } from "../controllers/news.controller.js";
+import {
+  validateNewsIdParam,
+  validateNewsBody,
+} from "../middleware/news.middleware.js";
 
 const newsRouter = Router();
 
 newsRouter.get("/", getAllNews);
-newsRouter.get("/:id", getNewsById);
-newsRouter.post("/", createNews);
-newsRouter.put("/:id", updateNews);
-newsRouter.delete("/:id", deleteNews);
+newsRouter.get("/:id", validateNewsIdParam, getNewsById);
+newsRouter.post("/", validateNewsBody, createNews);
+newsRouter.put("/:id", validateNewsIdParam, validateNewsBody, updateNews);
+newsRouter.delete("/:id", validateNewsIdParam, deleteNews);
 
 export default newsRouter;
