@@ -15,6 +15,15 @@ class Tokenizer {
     return token;
   }
 
+  static createRefreshToken(userId) {
+    const payload = { sub: userId };
+    const refreshToken = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    return refreshToken;
+  }
+
   static verifyToken(req, res, next) {
     const { access_tkn } = req.cookies;
 
