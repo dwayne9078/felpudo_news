@@ -8,3 +8,5 @@ const handleValidationErrors = (req, res, next) => {
   }
   next();
 };
+
+export default handleValidationErrors;
