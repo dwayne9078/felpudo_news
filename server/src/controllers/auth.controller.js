@@ -86,13 +86,17 @@ export const login = async (req, res) => {
       foundUser._id
     );
 
+    const refreshToken = Tokenizer.createRefreshToken(foundUser._id);
+
     res.cookie("access_tkn", token, {
       httpOnly: true,
       maxAge: 5 * 60 * 1000,
       sameSite: "strict",
     });
 
-    res.status(200).json({ message: "Login Succesful", auth: true });
+    res
+      .status(200)
+      .json({ message: "Login Succesful", token: refreshToken, auth: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
