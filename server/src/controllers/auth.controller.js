@@ -94,7 +94,7 @@ export const login = async (req, res) => {
       token: refreshToken,
     });
 
-    persistentRefreshToken.save();
+    await persistentRefreshToken.save();
 
     res.cookie("access_tkn", token, {
       httpOnly: true,
