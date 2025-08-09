@@ -102,6 +102,12 @@ export const login = async (req, res) => {
       sameSite: "strict",
     });
 
+    res.cookie("refresh_tkn", refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: "strict",
+    });
+
     res.status(200).json({ message: "Login Succesful", auth: true });
   } catch (error) {
     console.error(error);
