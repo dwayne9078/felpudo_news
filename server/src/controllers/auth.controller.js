@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 import User from "../models/user.model.js";
 import Tokenizer from "../util/tokenizer.js";
 import hashPassword from "../util/password_hasher.js";
+import Token from "../models/token.model.js";
 
 export const register = async (req, res) => {
   const result = validationResult(req);
@@ -87,6 +88,13 @@ export const login = async (req, res) => {
     );
 
     const refreshToken = Tokenizer.createRefreshToken(foundUser._id);
+
+    const persistentRefreshToken = new Token({
+      userId: foundUser._id,
+      token: refreshToken,
+    });
+
+    persistentRefreshToken.save();
 
     res.cookie("access_tkn", token, {
       httpOnly: true,
