@@ -24,6 +24,8 @@ class Tokenizer {
     return refreshToken;
   }
 
+  static verifyRefreshToken(req, res) {}
+
   static verifyToken(req, res, next) {
     const { access_tkn } = req.cookies;
 
