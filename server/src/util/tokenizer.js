@@ -24,7 +24,16 @@ class Tokenizer {
     return refreshToken;
   }
 
-  static verifyRefreshToken(refreshToken) {}
+  static verifyRefreshToken(refreshToken) {
+    try {
+      return jwt.verify(refreshToken, JWT_SECRET);
+    } catch (error) {
+      console.error(
+        "An error ocurred while verifying the token: " + error.message
+      );
+      throw error;
+    }
+  }
 
   static verifyToken(req, res, next) {
     const { access_tkn } = req.cookies;
