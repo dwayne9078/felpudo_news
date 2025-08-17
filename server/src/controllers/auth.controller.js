@@ -119,3 +119,5 @@ export const logout = async (req, res) => {
   res.clearCookie("access_tkn", { maxAge: 0 });
   res.send({ mensaje: "SESION CERRADA" });
 };
+
+export const refresh = async (req, res) => {};
