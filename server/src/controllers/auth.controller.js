@@ -120,4 +120,63 @@ export const logout = async (req, res) => {
   res.send({ mensaje: "SESION CERRADA" });
 };
 
-export const refresh = async (req, res) => {};
+export const refresh = async (req, res) => {
+  try {
+    const { refresh_tkn } = req.cookies;
+
+    if (!refresh_tkn) {
+      return res.status(401).json({ message: "Refresh token is missing." });
+    }
+
+    const decodedToken = Tokenizer.verifyRefreshToken(refresh_tkn);
+
+    const storedRefreshToken = await Token.findOne({ token: refresh_tkn });
+
+    if (!storedRefreshToken) {
+      return res.status(401).json({ message: "Invalid or revoked token." });
+    }
+
+    if (!storedRefreshToken.isActive) {
+      return res
+        .status(401)
+        .json({ message: "Refresh token has been revoked." });
+    }
+
+    // Get user data from id in refresh token
+    const foundUser = await User.findOne({ _id: decodedToken.sub });
+
+    const newAccessToken = Tokenizer.createToken(
+      {
+        user: {
+          username: foundUser.username,
+        },
+      },
+      foundUser._id
+    );
+    const newRefreshToken = Tokenizer.createRefreshToken(foundUser._id);
+
+    await storedRefreshToken.updateOne({ isActive: false });
+
+    await Token.create({
+      userId: decodedToken.sub,
+      token: newRefreshToken,
+    });
+
+    res.cookie("access_tkn", newAccessToken, {
+      httpOnly: true,
+      maxAge: 5 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.cookie("refresh_tkn", newRefreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.status(201).json({ message: "Refresh token succesfully refreshed" });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: "Invalid or expired refresh token." });
+  }
+};
