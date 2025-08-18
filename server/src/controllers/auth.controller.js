@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 import User from "../models/user.model.js";
 import Tokenizer from "../util/tokenizer.js";
 import hashPassword from "../util/password_hasher.js";
+import Token from "../models/token.model.js";
 
 export const register = async (req, res) => {
   const result = validationResult(req);
@@ -71,7 +72,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Incorrect Credentials" });
     }
 
-    const isPasswordMatched = bcrypt.compare(password, foundUser.password);
+    const isPasswordMatched = await bcrypt.compare(
+      password,
+      foundUser.password
+    );
 
     if (!isPasswordMatched) {
       return res.status(401).json({ message: "Incorrect Credentials" });
@@ -86,9 +90,24 @@ export const login = async (req, res) => {
       foundUser._id
     );
 
+    const refreshToken = Tokenizer.createRefreshToken(foundUser._id);
+
+    const persistentRefreshToken = new Token({
+      userId: foundUser._id,
+      token: refreshToken,
+    });
+
+    await persistentRefreshToken.save();
+
     res.cookie("access_tkn", token, {
       httpOnly: true,
       maxAge: 5 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.cookie("refresh_tkn", refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: "strict",
     });
 
@@ -100,6 +119,94 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.clearCookie("access_tkn", { maxAge: 0 });
-  res.send({ mensaje: "SESION CERRADA" });
+  try {
+    const { refresh_tkn } = req.cookies;
+
+    if (!refresh_tkn) {
+      return res
+        .status(200)
+        .json({ message: "Logout successful: No refresh token found." });
+    }
+
+    const updatedToken = await Token.updateOne(
+      { token: refresh_tkn },
+      { isActive: false }
+    );
+
+    if (updatedToken.modifiedCount > 0) {
+      res.clearCookie("access_tkn");
+      res.clearCookie("refresh_tkn");
+      return res.status(200).json({ message: "Logout successful." });
+    }
+
+    res.clearCookie("access_tkn");
+    res.clearCookie("refresh_tkn");
+    return res.status(200).json({
+      message: "Logout successful: Token not found or already logged out.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error during logout." });
+  }
+};
+
+export const refresh = async (req, res) => {
+  try {
+    const { refresh_tkn } = req.cookies;
+
+    if (!refresh_tkn) {
+      return res.status(401).json({ message: "Refresh token is missing." });
+    }
+
+    const decodedToken = Tokenizer.verifyRefreshToken(refresh_tkn);
+
+    const storedRefreshToken = await Token.findOne({ token: refresh_tkn });
+
+    if (!storedRefreshToken) {
+      return res.status(401).json({ message: "Invalid or revoked token." });
+    }
+
+    if (!storedRefreshToken.isActive) {
+      return res
+        .status(401)
+        .json({ message: "Refresh token has been revoked." });
+    }
+
+    // Get user data from id in refresh token
+    const foundUser = await User.findOne({ _id: decodedToken.sub });
+
+    const newAccessToken = Tokenizer.createToken(
+      {
+        user: {
+          username: foundUser.username,
+        },
+      },
+      foundUser._id
+    );
+    const newRefreshToken = Tokenizer.createRefreshToken(foundUser._id);
+
+    await storedRefreshToken.updateOne({ isActive: false });
+
+    await Token.create({
+      userId: decodedToken.sub,
+      token: newRefreshToken,
+    });
+
+    res.cookie("access_tkn", newAccessToken, {
+      httpOnly: true,
+      maxAge: 5 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.cookie("refresh_tkn", newRefreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: "strict",
+    });
+
+    res.status(201).json({ message: "Refresh token succesfully refreshed" });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: "Invalid or expired refresh token." });
+  }
 };
