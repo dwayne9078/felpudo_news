@@ -118,15 +118,32 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const { refresh_tkn } = req.cookies;
-    res.clearCookie("access_tkn", { maxAge: 0 });
-    res.clearCookie("refresh_tkn", { maxAge: 0 });
 
-    await Token.updateOne({ token: refresh_tkn }, { isActive: false });
+    if (!refresh_tkn) {
+      return res
+        .status(200)
+        .json({ message: "Logout successful: No refresh token found." });
+    }
 
-    res.status(200).json({ message: "Logout successful" });
+    const updatedToken = await Token.updateOne(
+      { token: refresh_tkn },
+      { isActive: false }
+    );
+
+    if (updatedToken.modifiedCount > 0) {
+      res.clearCookie("access_tkn");
+      res.clearCookie("refresh_tkn");
+      return res.status(200).json({ message: "Logout successful." });
+    }
+
+    res.clearCookie("access_tkn");
+    res.clearCookie("refresh_tkn");
+    return res.status(200).json({
+      message: "Logout successful: Token not found or already logged out.",
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error during logout." });
   }
 };
 
