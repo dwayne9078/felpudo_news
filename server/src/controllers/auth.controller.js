@@ -116,13 +116,18 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  const { refresh_tkn } = req.cookies;
-  res.clearCookie("access_tkn", { maxAge: 0 });
-  res.clearCookie("refresh_tkn", { maxAge: 0 });
+  try {
+    const { refresh_tkn } = req.cookies;
+    res.clearCookie("access_tkn", { maxAge: 0 });
+    res.clearCookie("refresh_tkn", { maxAge: 0 });
 
-  await Token.updateOne({ token: refresh_tkn }, { isActive: false });
+    await Token.updateOne({ token: refresh_tkn }, { isActive: false });
 
-  res.send({ mensaje: "SESION CERRADA" });
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export const refresh = async (req, res) => {
